@@ -15,20 +15,20 @@ type Admin struct {
 }
 
 func (a Admin) GetStats() (types.AdminStats, error) {
-	formData := url.Values{
-		"action": {"getAdminStats"},
-		"token":  {a.c.apiKey},
-	}
-
-	payload := strings.NewReader(formData.Encode())
-
-	req, err := a.c.newRequest(payload)
+	apiKey, err := a.c.authenticate()
 	if err != nil {
 		return types.AdminStats{}, err
 	}
 
+	formData := url.Values{
+		"action": {"getAdminStats"},
+		"token":  {apiKey},
+	}
+
+	payload := strings.NewReader(formData.Encode())
+
 	var respValue itypes.AdminStatsResponse
-	resp, err := a.c.do(req, &respValue)
+	resp, err := a.c.newRequest(payload, &respValue)
 	if err != nil {
 		return types.AdminStats{}, err
 	}

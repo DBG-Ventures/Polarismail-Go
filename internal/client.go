@@ -19,7 +19,6 @@ type Client struct {
 	baseUrl    string
 	httpClient *http.Client
 	creds      *types.Credentials
-	apiKey     string
 }
 
 func NewClient(creds *types.Credentials, httpClient *http.Client) (*Client, error) {
@@ -31,11 +30,6 @@ func NewClient(creds *types.Credentials, httpClient *http.Client) (*Client, erro
 		baseUrl:    DefaultURL,
 		httpClient: httpClient,
 		creds:      creds,
-	}
-
-	err := client.authenticate()
-	if err != nil {
-		return nil, err
 	}
 
 	return client, nil
@@ -61,7 +55,7 @@ func (c Client) Aliases() types.Aliases {
 	return nil
 }
 
-func (c *Client) authenticate() error {
+func (c *Client) authenticate() (string, error) {
 	formData := url.Values{
 		"action":   {"login"},
 		"username": {c.creds.Username},
@@ -70,27 +64,20 @@ func (c *Client) authenticate() error {
 
 	payload := strings.NewReader(formData.Encode())
 
-	request, err := c.newRequest(payload)
-	if err != nil {
-		return err
-	}
-
 	var respValue itypes.ApiKeyResponse
-	response, err := c.do(request, &respValue)
+	resp, err := c.newRequest(payload, &respValue)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	if response.StatusCode != http.StatusOK {
-		return fmt.Errorf("invalid credentials: %v", response.Status)
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("invalid credentials: %v", resp.Status)
 	}
 
-	c.apiKey = respValue.ReturnData
-
-	return nil
+	return respValue.ReturnData, nil
 }
 
-func (c *Client) newRequest(payload *strings.Reader) (*http.Request, error) {
+func (c *Client) newRequest(payload *strings.Reader, v interface{}) (*http.Response, error) {
 	req, err := http.NewRequest("GET", c.baseUrl, payload)
 	if err != nil {
 		return nil, err
@@ -102,10 +89,7 @@ func (c *Client) newRequest(payload *strings.Reader) (*http.Request, error) {
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")
-	return req, nil
-}
 
-func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
