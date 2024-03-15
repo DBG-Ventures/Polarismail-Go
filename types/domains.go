@@ -11,6 +11,8 @@ type Domain interface {
 	Info() (DomainInfo, error)
 	Edit() DomainEdit
 	DKIM() DomainDKIM
+	Footer() DomainFooter
+	Delete() error
 }
 
 type DomainEdit interface {
@@ -24,6 +26,11 @@ type DomainDKIM interface {
 	GetStatus() (DomainDKIMStatus, error)
 	Enable() (DomainDKIMStatus, error)
 	Disable() error
+}
+
+type DomainFooter interface {
+	Get() (string, error)
+	Set(footer string) error
 }
 
 type DomainInfo struct {

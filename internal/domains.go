@@ -96,6 +96,25 @@ func (d Domain) DKIM() types.DomainDKIM {
 	return DomainDKIM(d)
 }
 
+func (d Domain) Footer() types.DomainFooter {
+	return DomainFooter(d)
+}
+
+func (d Domain) Delete() error {
+	formData := url.Values{
+		"action": {"removeDomain"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.StatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return fmt.Errorf("unable to set domain footer %+v", err)
+	}
+
+	return nil
+}
+
 type DomainEdit struct {
 	name string
 	c    *Client
@@ -220,6 +239,42 @@ func (d DomainDKIM) Disable() error {
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return fmt.Errorf("unable to disable dkim: %+v", err)
+	}
+
+	return nil
+}
+
+type DomainFooter struct {
+	name string
+	c    *Client
+}
+
+func (d DomainFooter) Get() (string, error) {
+	formData := url.Values{
+		"action": {"getFooterDomain"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.StatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return "", fmt.Errorf("unable to get domain footer %+v", err)
+	}
+
+	return respValue.ReturnData, nil
+}
+
+func (d DomainFooter) Set(footer string) error {
+	formData := url.Values{
+		"action":    {"setFooterDomain"},
+		"domain":    {d.name},
+		"footertxt": {footer},
+	}
+
+	var respValue itypes.StatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return fmt.Errorf("unable to set domain footer %+v", err)
 	}
 
 	return nil
