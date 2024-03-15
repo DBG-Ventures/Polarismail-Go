@@ -32,7 +32,7 @@ func (a Admin) GetBrandInfo() (types.AdminBrandInfo, error) {
 	}
 
 	var respValue itypes.AdminBrandInfoResponse
-	err := a.c.requestWrapper(formData, respValue)
+	err := a.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return types.AdminBrandInfo{}, fmt.Errorf("unable to get admin brand info: %+v", err)
 	}
