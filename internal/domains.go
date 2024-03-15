@@ -87,3 +87,36 @@ func (d Domain) Info() (types.DomainInfo, error) {
 
 	return respValue.ReturnData.AsType(), nil
 }
+
+func (d Domain) EditDomainEnabled(enabled bool) error {
+	activeStatus := "0"
+	if enabled {
+		activeStatus = "1"
+	}
+
+	formData := url.Values{
+		"action":           {"updateDomain"},
+		"domain":           {d.name},
+		"editdomainactive": {activeStatus},
+	}
+
+	var respValue itypes.ErrorResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d Domain) EditCatchAll(status string) error {
+	return nil
+}
+
+func (d Domain) EditTimezone(timezone string) error {
+	return nil
+}
+
+func (d Domain) EditExchangeEnabled(enabled bool) error {
+	return nil
+}

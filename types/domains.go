@@ -10,6 +10,10 @@ type Domains interface {
 
 type Domain interface {
 	Info() (DomainInfo, error)
+	EditDomainEnabled(enabled bool) error
+	EditCatchAll(status string) error
+	EditTimezone(timezone string) error
+	EditExchangeEnabled(enabled bool) error
 }
 
 type DomainInfo struct {
