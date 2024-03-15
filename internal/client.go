@@ -50,7 +50,7 @@ func (c Client) Users() types.Users {
 }
 
 func (c Client) Domains() types.Domains {
-	return nil
+	return Domains{c: &c}
 }
 
 func (c Client) Lists() types.Lists {
