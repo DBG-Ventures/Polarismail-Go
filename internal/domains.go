@@ -42,3 +42,37 @@ func (d Domains) CheckAvailable(newDomain string) bool {
 
 	return err == nil
 }
+
+func (d Domains) Add(newDomain string) (types.Domain, error) {
+	return Domain{
+		name: newDomain,
+		c:    d.c,
+	}, nil
+}
+
+func (d Domains) Get(domain string) types.Domain {
+	return Domain{
+		name: domain,
+		c:    d.c,
+	}
+}
+
+type Domain struct {
+	name string
+	c    *Client
+}
+
+func (d Domain) Info() (types.DomainInfo, error) {
+	formData := url.Values{
+		"action": {"getDomainInfo"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.DomainInfoResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return types.DomainInfo{}, fmt.Errorf("unable to list all domains: %+v", err)
+	}
+
+	return respValue.ReturnData.AsType(), nil
+}
