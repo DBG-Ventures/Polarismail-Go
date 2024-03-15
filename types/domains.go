@@ -2,7 +2,7 @@ package types
 
 type Domains interface {
 	List() ([]DomainsList, error)
-	// CheckAvailable()
+	CheckAvailable(newDomain string) bool
 	// Add()
 	// Get()
 	// Delete()

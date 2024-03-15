@@ -128,7 +128,6 @@ func (c *Client) newRequest(payload *strings.Reader, v interface{}) error {
 	}
 
 	if errCheck.ReturnCode == 0 {
-		fmt.Println("error status")
 		var errResp itypes.ErrorResponse
 		err = json.Unmarshal(body, &errResp)
 		if err != nil {

@@ -30,3 +30,15 @@ func (d Domains) List() ([]types.DomainsList, error) {
 
 	return list, nil
 }
+
+func (d Domains) CheckAvailable(newDomain string) bool {
+	formData := url.Values{
+		"action": {"isDomainAvailable"},
+		"domain": {newDomain},
+	}
+
+	var respValue itypes.ErrorResponse
+	err := d.c.requestWrapper(formData, &respValue)
+
+	return err == nil
+}
