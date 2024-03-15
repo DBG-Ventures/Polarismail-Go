@@ -82,13 +82,26 @@ func (d Domain) Info() (types.DomainInfo, error) {
 	var respValue itypes.DomainInfoResponse
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
-		return types.DomainInfo{}, fmt.Errorf("unable to list all domains: %+v", err)
+		return types.DomainInfo{}, fmt.Errorf("unable to get domain info: %+v", err)
 	}
 
 	return respValue.ReturnData.AsType(), nil
 }
 
-func (d Domain) EditDomainEnabled(enabled bool) error {
+func (d Domain) Edit() types.DomainEdit {
+	return DomainEdit(d)
+}
+
+func (d Domain) DKIM() types.DomainDKIM {
+	return DomainDKIM(d)
+}
+
+type DomainEdit struct {
+	name string
+	c    *Client
+}
+
+func (d DomainEdit) DomainEnabled(enabled bool) error {
 	activeStatus := "0"
 	if enabled {
 		activeStatus = "1"
@@ -109,7 +122,7 @@ func (d Domain) EditDomainEnabled(enabled bool) error {
 	return nil
 }
 
-func (d Domain) EditCatchAll(status string) error {
+func (d DomainEdit) CatchAll(status string) error {
 	formData := url.Values{
 		"action":       {"updateDomain"},
 		"domain":       {d.name},
@@ -125,7 +138,7 @@ func (d Domain) EditCatchAll(status string) error {
 	return nil
 }
 
-func (d Domain) EditTimezone(timezone string) error {
+func (d DomainEdit) Timezone(timezone string) error {
 	formData := url.Values{
 		"action":     {"updateDomain"},
 		"domain":     {d.name},
@@ -141,7 +154,7 @@ func (d Domain) EditTimezone(timezone string) error {
 	return nil
 }
 
-func (d Domain) EditExchangeEnabled(enabled bool) error {
+func (d DomainEdit) ExchangeEnabled(enabled bool) error {
 	activeStatus := "0"
 	if enabled {
 		activeStatus = "1"
@@ -157,6 +170,56 @@ func (d Domain) EditExchangeEnabled(enabled bool) error {
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+type DomainDKIM struct {
+	name string
+	c    *Client
+}
+
+func (d DomainDKIM) GetStatus() (types.DomainDKIMStatus, error) {
+	formData := url.Values{
+		"action": {"getDKIM"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.DomainDKIMStatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return types.DomainDKIMStatus{}, fmt.Errorf("unable to get dkim status: %+v", err)
+	}
+
+	return respValue.Returndata.AsType(), nil
+}
+
+func (d DomainDKIM) Enable() (types.DomainDKIMStatus, error) {
+	formData := url.Values{
+		"action": {"enableDKIM"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.DomainDKIMEnableResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return types.DomainDKIMStatus{}, fmt.Errorf("unable to enable dkim: %+v", err)
+	}
+
+	return respValue.AsType(), nil
+}
+
+func (d DomainDKIM) Disable() error {
+	formData := url.Values{
+		"action": {"disableDKIM"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.StatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return fmt.Errorf("unable to disable dkim: %+v", err)
 	}
 
 	return nil

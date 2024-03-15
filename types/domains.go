@@ -5,15 +5,25 @@ type Domains interface {
 	CheckAvailable(newDomain string) bool
 	Add(newDomain string) (Domain, error)
 	Get(domain string) Domain
-	// Delete()
 }
 
 type Domain interface {
 	Info() (DomainInfo, error)
-	EditDomainEnabled(enabled bool) error
-	EditCatchAll(status string) error
-	EditTimezone(timezone string) error
-	EditExchangeEnabled(enabled bool) error
+	Edit() DomainEdit
+	DKIM() DomainDKIM
+}
+
+type DomainEdit interface {
+	DomainEnabled(enabled bool) error
+	CatchAll(status string) error
+	Timezone(timezone string) error
+	ExchangeEnabled(enabled bool) error
+}
+
+type DomainDKIM interface {
+	GetStatus() (DomainDKIMStatus, error)
+	Enable() (DomainDKIMStatus, error)
+	Disable() error
 }
 
 type DomainInfo struct {
@@ -38,4 +48,10 @@ type DomainsList struct {
 	IsAuditDomain bool   `json:"is_audit_domain,omitempty"`
 	DomainType    string `json:"domain_type,omitempty"`
 	Active        bool   `json:"active,omitempty"`
+}
+
+type DomainDKIMStatus struct {
+	DkimEnabled bool   `json:"dkim_enabled"`
+	DkimHost    string `json:"dkim_host"`
+	DkimKey     string `json:"dkim_key"`
 }

@@ -74,3 +74,37 @@ func (di *DomainInfoData) AsType() types.DomainInfo {
 		HomeCountry:         di.Homecountry,
 	}
 }
+
+type DomainDKIMStatusResponse struct {
+	Returncode int                  `json:"returncode"`
+	Returndata DomainDKIMStatusData `json:"returndata"`
+}
+
+type DomainDKIMStatusData struct {
+	DkimEnabled string `json:"dkim_enabled"`
+	DkimHost    string `json:"dkim_host"`
+	DkimKey     string `json:"dkim_key"`
+}
+
+func (dd DomainDKIMStatusData) AsType() types.DomainDKIMStatus {
+	return types.DomainDKIMStatus{
+		DkimEnabled: dd.DkimEnabled == "1",
+		DkimHost:    dd.DkimHost,
+		DkimKey:     dd.DkimKey,
+	}
+}
+
+type DomainDKIMEnableResponse struct {
+	Returncode int    `json:"returncode"`
+	Returndata string `json:"returndata"`
+	Dkimhost   string `json:"dkimhost"`
+	Dkimkey    string `json:"dkimkey"`
+}
+
+func (dd DomainDKIMEnableResponse) AsType() types.DomainDKIMStatus {
+	return types.DomainDKIMStatus{
+		DkimEnabled: true,
+		DkimHost:    dd.Dkimhost,
+		DkimKey:     dd.Dkimkey,
+	}
+}
