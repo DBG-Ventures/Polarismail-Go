@@ -128,7 +128,7 @@ func (c *Client) newRequest(payload *strings.Reader, v interface{}) error {
 	}
 
 	if errCheck.ReturnCode == 0 {
-		var errResp itypes.ErrorResponse
+		var errResp itypes.StatusResponse
 		err = json.Unmarshal(body, &errResp)
 		if err != nil {
 			return err

@@ -4,7 +4,7 @@ type ErrorCheck struct {
 	ReturnCode int `json:"returncode"`
 }
 
-type ErrorResponse struct {
+type StatusResponse struct {
 	ReturnCode int    `json:"returncode"`
 	ReturnData string `json:"returndata"`
 }

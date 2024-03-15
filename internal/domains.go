@@ -37,7 +37,7 @@ func (d Domains) CheckAvailable(newDomain string) bool {
 		"domain": {newDomain},
 	}
 
-	var respValue itypes.ErrorResponse
+	var respValue itypes.StatusResponse
 	err := d.c.requestWrapper(formData, &respValue)
 
 	return err == nil
@@ -49,7 +49,7 @@ func (d Domains) Add(newDomain string) (types.Domain, error) {
 		"domain": {newDomain},
 	}
 
-	var respValue itypes.ErrorResponse
+	var respValue itypes.StatusResponse
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (d Domain) EditDomainEnabled(enabled bool) error {
 		"editdomainactive": {activeStatus},
 	}
 
-	var respValue itypes.ErrorResponse
+	var respValue itypes.StatusResponse
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return err
@@ -116,7 +116,7 @@ func (d Domain) EditCatchAll(status string) error {
 		"editcatchall": {status},
 	}
 
-	var respValue itypes.ErrorResponse
+	var respValue itypes.StatusResponse
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return err
@@ -132,7 +132,7 @@ func (d Domain) EditTimezone(timezone string) error {
 		"editdtzone": {timezone},
 	}
 
-	var respValue itypes.ErrorResponse
+	var respValue itypes.StatusResponse
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return err
@@ -153,7 +153,7 @@ func (d Domain) EditExchangeEnabled(enabled bool) error {
 		"editexchangeenabled": {activeStatus},
 	}
 
-	var respValue itypes.ErrorResponse
+	var respValue itypes.StatusResponse
 	err := d.c.requestWrapper(formData, &respValue)
 	if err != nil {
 		return err
