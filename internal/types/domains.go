@@ -66,7 +66,7 @@ func (di *DomainInfoData) AsType() types.DomainInfo {
 		VUsers:              di.Vusers,
 		Aliases:             di.Aliases,
 		Lists:               di.Lists,
-		Active:              di.Active == "1",
+		Enabled:             di.Active == "1",
 		ExchangeEnabled:     di.ExchangeEnabled == "1",
 		AuditEnabled:        di.AuditEnabled == "1",
 		LocalDelivery:       di.Localdelivery == "1",

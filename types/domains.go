@@ -24,7 +24,7 @@ type DomainInfo struct {
 	VUsers              int    `json:"v_users"`
 	Aliases             int    `json:"aliases"`
 	Lists               int    `json:"lists"`
-	Active              bool   `json:"active"`
+	Enabled             bool   `json:"enabled"`
 	ExchangeEnabled     bool   `json:"exchange_enabled"`
 	AuditEnabled        bool   `json:"audit_enabled"`
 	LocalDelivery       bool   `json:"local_delivery"`
