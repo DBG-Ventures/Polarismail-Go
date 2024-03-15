@@ -110,13 +110,54 @@ func (d Domain) EditDomainEnabled(enabled bool) error {
 }
 
 func (d Domain) EditCatchAll(status string) error {
+	formData := url.Values{
+		"action":       {"updateDomain"},
+		"domain":       {d.name},
+		"editcatchall": {status},
+	}
+
+	var respValue itypes.ErrorResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (d Domain) EditTimezone(timezone string) error {
+	formData := url.Values{
+		"action":     {"updateDomain"},
+		"domain":     {d.name},
+		"editdtzone": {timezone},
+	}
+
+	var respValue itypes.ErrorResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (d Domain) EditExchangeEnabled(enabled bool) error {
+	activeStatus := "0"
+	if enabled {
+		activeStatus = "1"
+	}
+
+	formData := url.Values{
+		"action":              {"updateDomain"},
+		"domain":              {d.name},
+		"editexchangeenabled": {activeStatus},
+	}
+
+	var respValue itypes.ErrorResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
