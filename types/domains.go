@@ -12,6 +12,7 @@ type Domain interface {
 	Edit() DomainEdit
 	DKIM() DomainDKIM
 	Footer() DomainFooter
+	DomainAliases() DomainAliases
 	Delete() error
 }
 
@@ -61,4 +62,15 @@ type DomainDKIMStatus struct {
 	DkimEnabled bool   `json:"dkim_enabled"`
 	DkimHost    string `json:"dkim_host"`
 	DkimKey     string `json:"dkim_key"`
+}
+
+type DomainAliases interface {
+	List() ([]DomainAlias, error)
+	Add(alias string) error
+	Delete(alias string) error
+}
+
+type DomainAlias struct {
+	AliasDomainID int    `json:"alias_domain_id"`
+	AliasDomain   string `json:"alias_domain"`
 }

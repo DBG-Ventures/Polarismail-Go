@@ -100,6 +100,10 @@ func (d Domain) Footer() types.DomainFooter {
 	return DomainFooter(d)
 }
 
+func (d Domain) DomainAliases() types.DomainAliases {
+	return DomainAliases(d)
+}
+
 func (d Domain) Delete() error {
 	formData := url.Values{
 		"action": {"removeDomain"},
@@ -269,6 +273,63 @@ func (d DomainFooter) Set(footer string) error {
 		"action":    {"setFooterDomain"},
 		"domain":    {d.name},
 		"footertxt": {footer},
+	}
+
+	var respValue itypes.StatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return fmt.Errorf("unable to set domain footer %+v", err)
+	}
+
+	return nil
+}
+
+type DomainAliases struct {
+	name string
+	c    *Client
+}
+
+func (d DomainAliases) List() ([]types.DomainAlias, error) {
+	formData := url.Values{
+		"action": {"getAliasDomains"},
+		"domain": {d.name},
+	}
+
+	var respValue itypes.DomainAliasesResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return []types.DomainAlias{}, fmt.Errorf("unable to list all domain aliases: %+v", err)
+	}
+
+	var list []types.DomainAlias
+	for _, alias := range respValue.Returndata {
+		list = append(list, alias.AsType())
+	}
+
+	return list, nil
+}
+
+func (d DomainAliases) Add(alias string) error {
+	formData := url.Values{
+		"action":  {"addAliasDomain"},
+		"domain":  {d.name},
+		"adomain": {alias},
+	}
+
+	var respValue itypes.StatusResponse
+	err := d.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return fmt.Errorf("unable to set domain footer %+v", err)
+	}
+
+	return nil
+}
+
+func (d DomainAliases) Delete(alias string) error {
+	formData := url.Values{
+		"action":  {"removeAliasDomain"},
+		"domain":  {d.name},
+		"adomain": {alias},
 	}
 
 	var respValue itypes.StatusResponse

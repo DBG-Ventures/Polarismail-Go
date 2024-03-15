@@ -108,3 +108,17 @@ func (dd DomainDKIMEnableResponse) AsType() types.DomainDKIMStatus {
 		DkimKey:     dd.Dkimkey,
 	}
 }
+
+type DomainAliasesResponse struct {
+	Returncode int                 `json:"returncode"`
+	Returndata []DomainAliasesData `json:"returndata"`
+}
+
+type DomainAliasesData struct {
+	AliasDomainID int    `json:"alias_domain_id"`
+	AliasDomain   string `json:"alias_domain"`
+}
+
+func (da DomainAliasesData) AsType() types.DomainAlias {
+	return types.DomainAlias(da)
+}
