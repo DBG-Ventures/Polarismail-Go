@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -30,6 +31,11 @@ func NewClient(creds *types.Credentials, httpClient *http.Client) (*Client, erro
 		baseUrl:    DefaultURL,
 		httpClient: httpClient,
 		creds:      creds,
+	}
+
+	_, err := client.authenticate()
+	if err != nil {
+		return nil, err
 	}
 
 	return client, nil
@@ -65,22 +71,32 @@ func (c *Client) authenticate() (string, error) {
 	payload := strings.NewReader(formData.Encode())
 
 	var respValue itypes.ApiKeyResponse
-	resp, err := c.newRequest(payload, &respValue)
+	err := c.newRequest(payload, &respValue)
 	if err != nil {
-		return "", err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("invalid credentials: %v", resp.Status)
+		fmt.Println(err)
+		return "", fmt.Errorf("invalid credentials")
 	}
 
 	return respValue.ReturnData, nil
 }
 
-func (c *Client) newRequest(payload *strings.Reader, v interface{}) (*http.Response, error) {
-	req, err := http.NewRequest("GET", c.baseUrl, payload)
+func (c *Client) requestWrapper(formData url.Values, v interface{}) error {
+	apiKey, err := c.authenticate()
 	if err != nil {
-		return nil, err
+		return err
+	}
+
+	formData.Add("token", apiKey)
+
+	payload := strings.NewReader(formData.Encode())
+
+	return c.newRequest(payload, v)
+}
+
+func (c *Client) newRequest(payload *strings.Reader, v interface{}) error {
+	req, err := http.NewRequest("POST", c.baseUrl, payload)
+	if err != nil {
+		return err
 	}
 
 	requestParams := url.Values{}
@@ -92,10 +108,35 @@ func (c *Client) newRequest(payload *strings.Reader, v interface{}) (*http.Respo
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
 
-	err = json.NewDecoder(resp.Body).Decode(v)
-	return resp, err
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("invalid response status: %s", resp.Status)
+	}
+
+	var errCheck itypes.ErrorCheck
+	err = json.Unmarshal(body, &errCheck)
+	if err != nil {
+		fmt.Println("error check")
+		return err
+	}
+
+	if errCheck.ReturnCode == 0 {
+		fmt.Println("error status")
+		var errResp itypes.ErrorResponse
+		err = json.Unmarshal(body, &errResp)
+		if err != nil {
+			return err
+		}
+
+		return fmt.Errorf("%v", errResp.ReturnData)
+	}
+
+	return json.Unmarshal(body, v)
 }

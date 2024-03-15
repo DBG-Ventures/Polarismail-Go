@@ -36,3 +36,28 @@ func (a AdminStatsData) AsType() types.AdminStats {
 		AutogrowQuota:         a.AutogrowQuota,
 	}
 }
+
+type AdminBrandInfoResponse struct {
+	ReturnData AdminBrandInfoData `json:"returndata"`
+	ReturnCode int                `json:"returncode"`
+}
+
+type AdminBrandInfoData struct {
+	BasicLogo     string `json:"basic_logo"`
+	BasicLogoHref string `json:"basic_logo_href"`
+	SupportEmail  string `json:"supportemail"`
+	BrandName     string `json:"brandname"`
+	BrandLink     string `json:"brandlink"`
+	BrandColor    string `json:"brandcolor"`
+}
+
+func (a AdminBrandInfoData) AsType() types.AdminBrandInfo {
+	return types.AdminBrandInfo{
+		BasicLogo:     a.BasicLogo,
+		BasicLogoHref: a.BasicLogoHref,
+		SupportEmail:  a.SupportEmail,
+		BrandName:     a.BrandName,
+		BrandLink:     a.BrandLink,
+		BrandColor:    a.BrandColor,
+	}
+}

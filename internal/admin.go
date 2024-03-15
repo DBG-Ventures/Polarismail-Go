@@ -2,9 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
-	"strings"
 
 	itypes "github.com/dbgventures/polarismail-go/internal/types"
 	"github.com/dbgventures/polarismail-go/types"
@@ -15,34 +13,33 @@ type Admin struct {
 }
 
 func (a Admin) GetStats() (types.AdminStats, error) {
-	apiKey, err := a.c.authenticate()
-	if err != nil {
-		return types.AdminStats{}, err
-	}
-
 	formData := url.Values{
 		"action": {"getAdminStats"},
-		"token":  {apiKey},
 	}
-
-	payload := strings.NewReader(formData.Encode())
 
 	var respValue itypes.AdminStatsResponse
-	resp, err := a.c.newRequest(payload, &respValue)
+	err := a.c.requestWrapper(formData, &respValue)
 	if err != nil {
-		return types.AdminStats{}, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return types.AdminStats{}, fmt.Errorf("unable to get admin stats: %+v", resp)
+		return types.AdminStats{}, fmt.Errorf("unable to get admin stats: %+v", err)
 	}
 
 	return respValue.ReturnData.AsType(), nil
 }
 
-func (a Admin) GetBrandInfo() {
+func (a Admin) GetBrandInfo() (types.AdminBrandInfo, error) {
+	formData := url.Values{
+		"action": {"getAdminBrandInfo"},
+	}
 
+	var respValue itypes.AdminBrandInfoResponse
+	err := a.c.requestWrapper(formData, respValue)
+	if err != nil {
+		return types.AdminBrandInfo{}, fmt.Errorf("unable to get admin brand info: %+v", err)
+	}
+
+	return respValue.ReturnData.AsType(), nil
 }
+
 func (a Admin) GetActionHistory() {
 
 }

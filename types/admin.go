@@ -2,7 +2,7 @@ package types
 
 type Admin interface {
 	GetStats() (AdminStats, error)
-	GetBrandInfo()
+	GetBrandInfo() (AdminBrandInfo, error)
 	GetActionHistory()
 	UpdatePassword()
 	UpdateEmail()
@@ -18,4 +18,13 @@ type AdminStats struct {
 	CurrentQuota          string `json:"current_quota,omitempty"`
 	MaxQuota              string `json:"max_quota,omitempty"`
 	AutogrowQuota         string `json:"autogrow_quota,omitempty"`
+}
+
+type AdminBrandInfo struct {
+	BasicLogo     string `json:"basic_logo"`
+	BasicLogoHref string `json:"basic_logo_href"`
+	SupportEmail  string `json:"support_email"`
+	BrandName     string `json:"brand_name"`
+	BrandLink     string `json:"brand_link"`
+	BrandColor    string `json:"brand_color"`
 }
