@@ -40,8 +40,24 @@ func (a Admin) GetBrandInfo() (types.AdminBrandInfo, error) {
 	return respValue.ReturnData.AsType(), nil
 }
 
-func (a Admin) GetActionHistory() {
+func (a Admin) GetActionHistory() ([]types.AdminActionHistory, error) {
+	formData := url.Values{
+		"action": {"getAccountStats"},
+	}
 
+	var respValue itypes.AdminActionHistoryResponse
+	err := a.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return []types.AdminActionHistory{}, err
+	}
+
+	var history []types.AdminActionHistory
+
+	for _, action := range respValue.ReturnData {
+		history = append(history, action.AsType())
+	}
+
+	return history, nil
 }
 
 func (a Admin) UpdatePassword() {

@@ -3,7 +3,7 @@ package types
 type Admin interface {
 	GetStats() (AdminStats, error)
 	GetBrandInfo() (AdminBrandInfo, error)
-	GetActionHistory()
+	GetActionHistory() ([]AdminActionHistory, error)
 	UpdatePassword()
 	UpdateEmail()
 }
@@ -27,4 +27,11 @@ type AdminBrandInfo struct {
 	BrandName     string `json:"brand_name"`
 	BrandLink     string `json:"brand_link"`
 	BrandColor    string `json:"brand_color"`
+}
+
+type AdminActionHistory struct {
+	Action   string `json:"action"`
+	Username string `json:"username"`
+	RemoteIp string `json:"remote_ip"`
+	Date     string `json:"date"`
 }

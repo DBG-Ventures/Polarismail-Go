@@ -61,3 +61,24 @@ func (a AdminBrandInfoData) AsType() types.AdminBrandInfo {
 		BrandColor:    a.BrandColor,
 	}
 }
+
+type AdminActionHistoryResponse struct {
+	ReturnCode int                      `json:"returncode"`
+	ReturnData []AdminActionHistoryData `json:"returndata"`
+}
+
+type AdminActionHistoryData struct {
+	Action   string `json:"action"`
+	Username string `json:"username"`
+	RemoteIp string `json:"remoteip"`
+	Date     string `json:"date1"`
+}
+
+func (a AdminActionHistoryData) AsType() types.AdminActionHistory {
+	return types.AdminActionHistory{
+		Action:   a.Action,
+		Username: a.Username,
+		RemoteIp: a.RemoteIp,
+		Date:     a.Date,
+	}
+}
