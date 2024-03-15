@@ -60,10 +60,35 @@ func (a Admin) GetActionHistory() ([]types.AdminActionHistory, error) {
 	return history, nil
 }
 
-func (a Admin) UpdatePassword() {
+func (a Admin) UpdatePassword(newPassword string) error {
+	formData := url.Values{
+		"action":    {"changePassword"},
+		"password1": {a.c.creds.Password},
+		"password2": {newPassword},
+	}
 
+	var respValue itypes.AdminUpdateResponse
+	err := a.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return err
+	}
+
+	a.c.creds.Password = newPassword
+
+	return nil
 }
 
-func (a Admin) UpdateEmail() {
+func (a Admin) UpdateEmail(newEmail string) error {
+	formData := url.Values{
+		"action":     {"changeEmail"},
+		"emailadmin": {newEmail},
+	}
 
+	var respValue itypes.AdminUpdateResponse
+	err := a.c.requestWrapper(formData, &respValue)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

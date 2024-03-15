@@ -4,8 +4,8 @@ type Admin interface {
 	GetStats() (AdminStats, error)
 	GetBrandInfo() (AdminBrandInfo, error)
 	GetActionHistory() ([]AdminActionHistory, error)
-	UpdatePassword()
-	UpdateEmail()
+	UpdatePassword(newPassword string) error
+	UpdateEmail(newEmail string) error
 }
 
 type AdminStats struct {

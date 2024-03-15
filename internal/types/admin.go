@@ -82,3 +82,8 @@ func (a AdminActionHistoryData) AsType() types.AdminActionHistory {
 		Date:     a.Date,
 	}
 }
+
+type AdminUpdateResponse struct {
+	ReturnCode int    `json:"returncode"`
+	ReturnData string `json:"returndata"`
+}
