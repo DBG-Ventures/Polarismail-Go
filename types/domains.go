@@ -34,6 +34,12 @@ type DomainFooter interface {
 	Set(footer string) error
 }
 
+type DomainAliases interface {
+	List() ([]DomainAlias, error)
+	Add(alias string) error
+	Delete(alias string) error
+}
+
 type DomainInfo struct {
 	Timezone            string `json:"timezone"`
 	ExpiryNotifications int    `json:"expiry_notifications"`
@@ -62,12 +68,6 @@ type DomainDKIMStatus struct {
 	DkimEnabled bool   `json:"dkim_enabled"`
 	DkimHost    string `json:"dkim_host"`
 	DkimKey     string `json:"dkim_key"`
-}
-
-type DomainAliases interface {
-	List() ([]DomainAlias, error)
-	Add(alias string) error
-	Delete(alias string) error
 }
 
 type DomainAlias struct {
