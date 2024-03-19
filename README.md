@@ -1,8 +1,12 @@
 # Polarismail-Go
 
+> [!WARNING]  
 > This is a work in progress, do not use it in production
 
 PolarisMail-Go is a community driven sdk for the Polarismail REST API written in Go. The SDK strives to normalize the data return from the API to make it more human readable and provide an intuitive interface structure for interacting with your email systems.
+
+> [!NOTE]  
+> Not affiliated with or endorsed by PolarisMail, Inc.
 
 ## Getting Started
 
