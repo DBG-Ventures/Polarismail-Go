@@ -45,8 +45,8 @@ func (d Domains) CheckAvailable(newDomain string) bool {
 
 func (d Domains) Add(newDomain string) (types.Domain, error) {
 	formData := url.Values{
-		"action": {"addDomain"},
-		"domain": {newDomain},
+		"action":    {"addDomain"},
+		"newdomain": {newDomain},
 	}
 
 	var respValue itypes.StatusResponse
